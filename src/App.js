@@ -161,10 +161,17 @@ export default () => {
               <div class="poster_wrapper true">
                 <div class="poster">
                   <div class="image_content backdrop">
-                    <img
-                      src={`https://image.tmdb.org/t/p//w300_and_h450_bestv2${movieSelected.poster_path}`}
-                      alt={movieSelected.original_title}
-                    />
+                    {movieSelected?.poster_path ? (
+                      <img
+                        src={`https://image.tmdb.org/t/p//w300_and_h450_bestv2${movieSelected.poster_path}`}
+                        alt={movieSelected.original_title}
+                      />
+                    ) : (
+                      <img
+                        src="https://anthropology.utk.edu/wp-content/uploads/2016/03/NotAvailable.jpg"
+                        alt="image notfound"
+                      />
+                    )}
                   </div>
                 </div>
               </div>
