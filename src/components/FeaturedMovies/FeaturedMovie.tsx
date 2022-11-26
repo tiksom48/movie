@@ -1,15 +1,31 @@
 import React from "react";
 import "./FeaturedMovie.css";
 
-export default ({ item }) => {
-  let firstDate = new Date(item.first_air_date);
-  let genres = [];
-  for (let i in item.genres) {
-    genres.push(item.genres[i].name);
-  }
+type ItemProps = {
+  first_air_date: Date,
+  genres: any,
+  overview: String,
+  original_name: String,
+  backdrop_path: String,
+  vote_average: number,
+  number_of_seasons: number,
+  homepage: string;
+}
 
+type FeaturedProps ={
+  item: ItemProps;
+}
+
+export default ({ item }: FeaturedProps) => {
+  console.log(item)
+  let firstDate = new Date(item.first_air_date);
+  let genres = [] as any;
+  for (let i in item.genres) {
+    genres.push(item?.genres[i].name);
+  }
+console.log(item)
   let description = item.overview;
-  if (description.length > 200) {
+  if (description?.length > 200) {
     description = description.substring(0, 200) + "...";
   }
 
@@ -35,11 +51,8 @@ export default ({ item }) => {
           </div>
           <div className="featured--description">{description}</div>
           <div className="featured--buttons">
-            <a href={`/watch/${item.id}`} className="featured--watchbutton">
+            <a href={item.homepage} target="_blank" className="featured--watchbutton">
               ► Assistir
-            </a>
-            <a href={`/list/add/${item.id}`} className="featured--mylistbutton">
-              + Minha Lista
             </a>
           </div>
           <div className="featured--genres">

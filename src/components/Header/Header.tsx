@@ -1,8 +1,13 @@
 import React from "react";
 import "./Header.css";
-import gifmovie from "../components/img/funmoviegif.gif";
+const gifmovie = require("../../img/funmoviegif.gif")
 
-export default ({ black, setSearchItem }) => {
+type HeaderProps ={ 
+  black: boolean,
+  setSearchItem: (item: any) => void
+}
+
+export default ({ black, setSearchItem }: HeaderProps) => {
   return (
     <header className={black ? "black" : ""}>
       <div className="header--logo">

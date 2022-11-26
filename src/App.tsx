@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
 import "./App.css";
 import tmdb from "./tmdb";
-import MovieRow from "./components/MovieRow";
-import FeaturedMovie from "./components/FeaturedMovie";
-import Header from "./components/Header";
+import MovieRow from "./components/MovieRow/MovieRow";
+import FeaturedMovie from "./components/FeaturedMovies/FeaturedMovie";
+import Header from "./components/Header/Header";
 import Modal from "react-modal";
 import CloseIcon from "@mui/icons-material/Close";
+import { api } from "./api/api";
 
 const customStyles = {
   content: {
@@ -15,23 +16,29 @@ const customStyles = {
   },
 };
 
+type ListProps = {
+  slug: string;
+  title: string;
+  items: any;
+}
+
 export default () => {
-  const [movieList, setMovieList] = useState([]);
-  const [featuredData, setFeaturedData] = useState(null);
+  const [movieList, setMovieList] = useState<ListProps[]>([]);
+  const [featuredData, setFeaturedData] = useState({} as any);
   const [blackHeader, setBlackHeader] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
-  const [movieSelected, setMovieSelected] = useState({});
-  const [searchItem, setSearchItem] = useState(null);
+  const [movieSelected, setMovieSelected] = useState({} as any);
+  const [searchItem, setSearchItem] = useState<any>(null);
   const [resultSearch, setResultSearch] = useState(null);
 
   const handleModal = () => {
     setIsOpen(!isOpen);
   };
 
-  const handleSelectedMovie = async (item) => {
+  const handleSelectedMovie = async (item: any) => {
     await tmdb
       .getMovieInfo(item.id, "movie")
-      .then((res) => setMovieSelected(res));
+      .then((res: any) => setMovieSelected(res));
   };
 
   useEffect(() => {
@@ -43,11 +50,11 @@ export default () => {
       //Pegando o Featured
       let originals = list.filter((i) => i.slug === "originals");
       let randomChosen = Math.floor(
-        Math.random() * (originals[0].items.results.length - 1)
+        Math.random() * (originals[0]?.items?.results?.length - 1)
       );
       let chosen = originals[0].items.results[randomChosen];
       let chosenInfo = await tmdb.getMovieInfo(chosen.id, "tv");
-      if (!chosenInfo.backdrop_path) loadAll();
+      if (!chosenInfo) loadAll();
       setFeaturedData(chosenInfo);
     };
 
@@ -77,7 +84,7 @@ export default () => {
   }, [movieSelected]);
 
   useEffect(() => {
-    if (searchItem?.length > 2) {
+    if (searchItem && searchItem?.length > 2) {
       setTimeout(() => {
         const endpoint = `https://api.themoviedb.org/3/search/movie?api_key=4eefae54393dcb3c2ed71eca814368c5&language=en-US&query=${encodeURIComponent(
           searchItem
@@ -97,7 +104,7 @@ export default () => {
           .catch((error) => console.error("Error:", error));
       }, 500);
     } else {
-      setResultSearch({});
+      setResultSearch(null);
     }
   }, [searchItem]);
 
@@ -108,7 +115,7 @@ export default () => {
       {featuredData && <FeaturedMovie item={featuredData} />}
 
       <section className="lists">
-        {resultSearch?.length ? (
+        {resultSearch && resultSearch != null ? (
           <MovieRow
             title={"Resultado da pesquisa"}
             items={{ results: resultSearch }}
@@ -116,7 +123,7 @@ export default () => {
             handleSelectedMovie={handleSelectedMovie}
           />
         ) : (
-          movieList.map((item, itemMovie, key) => (
+          movieList.map((item, itemMovie, key: any) => (
             <MovieRow
               key={key}
               title={item.title}
@@ -134,7 +141,7 @@ export default () => {
         </a>
       </footer>
 
-      {movieList.length <= 0 && (
+      {movieList?.length <= 0 && (
         <div className="loading">
           <img
             src="https://media.tenor.com/9CqTZoKN-KsAAAAC/loading-windows.gif"
@@ -150,17 +157,17 @@ export default () => {
         }}
         style={customStyles}
       >
-        <div class="closeBtn">
-          <button class="btnCloseModal" onClick={handleModal}>
+        <div className="closeBtn">
+          <button className="btnCloseModal" onClick={handleModal}>
             <CloseIcon />
           </button>
         </div>
         {movieSelected?.id ? (
-          <div class="containerMovie">
-            <section class="sectionItems">
-              <div class="poster_wrapper true">
-                <div class="poster">
-                  <div class="image_content backdrop">
+          <div className="containerMovie">
+            <section className="sectionItems">
+              <div className="poster_wrapper true">
+                <div className="poster">
+                  <div className="image_content backdrop">
                     {movieSelected?.poster_path ? (
                       <img
                         src={`https://image.tmdb.org/t/p//w300_and_h450_bestv2${movieSelected.poster_path}`}
@@ -176,10 +183,10 @@ export default () => {
                 </div>
               </div>
 
-              <div class="header_poster_wrapper true">
+              <div className="header_poster_wrapper true">
                 <section>
                   <div
-                    class="title ott_true"
+                    className="title ott_true"
                     style={{ margin: 36, color: "white" }}
                   >
                     <h2>
@@ -187,8 +194,8 @@ export default () => {
                       <span> ({movieSelected.release_date.split("-")[0]})</span>
                     </h2>
 
-                    <div class="facts">
-                      {movieSelected.genres.map((item, index) => {
+                    <div className="facts">
+                      {movieSelected.genres.map((item: any, index: string | number)  => {
                         return (
                           <span>
                             {index !== 0 ? ", " : ""}
@@ -199,18 +206,18 @@ export default () => {
                       <span> ● {movieSelected.runtime}m</span>
                     </div>
 
-                    <div class="avaliations" style={{ marginTop: 22 }}>
+                    <div className="avaliations" style={{ marginTop: 22 }}>
                       Avaliação dos usuários{" "}
                       <span>
                         {movieSelected.vote_average.toFixed(2)} Pontos
                       </span>
                     </div>
 
-                    <div class="tagline" style={{ marginTop: 22 }}>
+                    <div className="tagline" style={{ marginTop: 22 }}>
                       "{movieSelected.tagline}"
                     </div>
 
-                    <div class="sinopse" style={{ marginTop: 22 }}>
+                    <div className="sinopse" style={{ marginTop: 22 }}>
                       <h3>Sinopse</h3>
                       <p>{movieSelected.overview}</p>
                     </div>
@@ -218,9 +225,9 @@ export default () => {
                 </section>
               </div>
             </section>
-            <div class="companies">
+            <div className="companies">
               <h2>Produzido por</h2>
-              {movieSelected.production_companies.map((item, index) => {
+              {movieSelected.production_companies.map((item: any, index: number) => {
                 return (
                   <span>
                     {index !== 0 ? ", " : ""}

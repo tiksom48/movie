@@ -3,7 +3,18 @@ import "./MovieRow.css";
 import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 
-export default ({ title, items, handleModal, handleSelectedMovie }) => {
+type MovieRowPros = {
+  title: String,
+  items: ItemsProps,
+  handleModal: () => void,
+  handleSelectedMovie: (item: any) => void,
+}
+
+type ItemsProps = {
+  results: any
+ }
+
+export default ({ title, items, handleModal, handleSelectedMovie }: MovieRowPros) => {
   const [scrollX, setScrollX] = useState(0);
 
   const handleLeftArrow = () => {
@@ -16,7 +27,7 @@ export default ({ title, items, handleModal, handleSelectedMovie }) => {
 
   const handleRightArrow = () => {
     let x = scrollX - Math.round(window.innerWidth / 2);
-    let listW = items.results.length * 150;
+    let listW = items?.results?.length * 150;
     if (window.innerWidth - listW > x) {
       x = window.innerWidth - listW - 60;
     }
@@ -39,11 +50,11 @@ export default ({ title, items, handleModal, handleSelectedMovie }) => {
               className="movieRow--list"
               style={{
                 marginLeft: scrollX,
-                width: items.results.length * 150,
+                width: items?.results?.length * 150,
               }}
             >
-              {items.results.length > 0 &&
-                items.results.map((item, key) => (
+              {items?.results?.length > 0 &&
+                items.results.map((item: any, key: any ) => (
                   <div
                     key={key}
                     className="movieRow--item"

@@ -1,7 +1,7 @@
 const API_KEY = "4eefae54393dcb3c2ed71eca814368c5";
 const API_BASE = "https://api.themoviedb.org/3";
 
-const basicFetch = async (endpoint) => {
+const basicFetch = async (endpoint:any) => {
   const req = await fetch(`${API_BASE}${endpoint}`);
   const json = await req.json();
   return json;
@@ -68,8 +68,8 @@ export default {
       },
     ];
   },
-  getMovieInfo: async (movieId, type) => {
-    let info = {};
+  getMovieInfo: async (movieId:any, type:any) => {
+    let info = {} || null;
 
     if (movieId) {
       switch (type) {
